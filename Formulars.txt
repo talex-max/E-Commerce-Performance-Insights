@@ -1,0 +1,52 @@
+DAX FORMULAS
+-----------------------------------
+
+1. %_MoM_net_revenue_var = 
+						IF([MoM_net_revenue_var], DIVIDE([MoM_net_revenue_var], [net_revenue_PM],0))
+2. %_MoM_orders_var = 
+						IF([MoM_total_orders_var], DIVIDE([MoM_total_orders_var], [total_orders_PM],0))
+3. %_orders_returned = DIVIDE(CALCULATE(COUNT('e-orders'[returned]), 'e-orders'[returned] = "Yes"), 
+						CALCULATE(COUNT('e-orders'[returned]), ALLSELECTED('e-orders'[returned])))
+4. %_YoY_net_revenue_var = IF([YoY_net_revenue_var], DIVIDE([YoY_net_revenue_var],[net_revenue_LY],0))
+5. %_YoY_total_orders_var = IF([YoY_total_orders_var], DIVIDE([YoY_total_orders_var], [total_orders_LY],0))
+6. avg_order_value (AOV) = DIVIDE([gross_revenue], [total_orders], 0)
+7. churned_customers = 
+					VAR SnapshotDate = MAX('calendar'[Date]) 
+					VAR ThresholdDate = EDATE(SnapshotDate, -6) 
+					RETURN 
+						IF(MAX('calendar'[Year])=2026, 0,
+						COUNTROWS( FILTER( ALL('e-orders'[customer_id]), [last_purchase_date] < ThresholdDate && NOT(ISBLANK([last_purchase_date])))))
+8. churn_rate = DIVIDE( [churned_customers], [total_customers_to_date], 0)
+9. gross_revenue = SUM('e-orders'[total_amount])
+10. last_purchase_date = MAX('e-orders'[order_date])
+11. MoM_net_revenue_var = IF([net_revenue] && [net_revenue_PM], [net_revenue] - [net_revenue_PM])
+12. MoM_total_orders_var = IF([total_orders] && [total_orders_PM], [total_orders] - [total_orders_PM])
+13. net_revenue = [gross_revenue] - [returned_revenue]
+14. net_revenue_LY = IF([net_revenue], CALCULATE([net_revenue], SAMEPERIODLASTYEAR('calendar'[Date])))
+15. net_revenue_PM = IF([net_revenue], CALCULATE([net_revenue], PREVIOUSMONTH('calendar'[Date])))
+16. repeated_purchases = COUNTROWS(
+						FILTER(
+								VALUES('e-orders'[customer_id]),
+								CALCULATE(DISTINCTCOUNT('e-orders'[order_id])) > 1
+							   )
+								)
+
+17. repeated_purchases_LY = IF([repeated_purchases], CALCULATE([repeated_purchases], SAMEPERIODLASTYEAR('calendar'[Date])))
+18. repeated_purchases_var = IF([repeated_purchases_LY], [repeated_purchases] - [repeated_purchases_LY])
+19. repeat_purchase_rate = DIVIDE([repeated_purchases], [total_customers],0)
+20. returned_orders = CALCULATE(COUNT('e-orders'[returned]), 'e-orders'[returned] = "Yes")
+21. returned_revenue = CALCULATE([gross_revenue], 'e-orders'[returned]="Yes")
+22. total_customers = DISTINCTCOUNT(('e-orders'[customer_id]))
+23. total_customers_to_date = CALCULATE( DISTINCTCOUNT('e-orders'[customer_id]), FILTER( ALL('calendar'), 'calendar'[Date] <= MAX('calendar'[Date]) ) )
+24. total_orders = DISTINCTCOUNT('e-orders'[order_id])
+25. total_orders_LY = IF([total_orders], CALCULATE([total_orders], SAMEPERIODLASTYEAR('calendar'[Date])))
+26. total_orders_PM = IF([total_orders], CALCULATE([total_orders], PREVIOUSMONTH('calendar'[Date])))
+27. YoY_net_revenue_var = IF(AND([net_revenue],[net_revenue_LY]), [net_revenue] - [net_revenue_LY])
+28. YoY_total_orders_var = IF(AND([total_orders],[total_orders_LY]), [total_orders] - [total_orders_LY])
+
+PLUS OTHER EXCEL FUNCTIONS LIKE VLOOKUP, INDEX - MATCH, LOGICAL FUNCTIONS ETC
+
+
+
+
+
