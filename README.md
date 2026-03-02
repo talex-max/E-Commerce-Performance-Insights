@@ -1,3 +1,5 @@
+# E-Commerce Performance Insights -(Using MS Excel)
+
 ## 1. Executive Summary
 This report summarizes an e-commerce performance analysis conducted on a synthetic dataset from 2023 to early 2026. The analysis focused on revenue trends, customer behavior, churn patterns, product performance, and geographic sales distribution. Overall, the business shows recovery in 2025 with improved customer retention, but faces risks from declining average order value and high revenue dependence on a small group of customers.
 ## 2. Project Objectives
